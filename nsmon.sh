@@ -48,7 +48,7 @@ from flask import Flask,request,jsonify,abort
 C=json.load(open('/opt/nsmon/agent.json')); app=Flask(__name__)
 @app.before_request
 def chk():
-    if C['allow'] and request.remote_addr not in C['allow']: abort(403)
+    if C['allow'] and request.remote_addr not in C['allow']+['127.0.0.1','::1']: abort(403)
     if not hmac.compare_digest(request.headers.get('X-Token',''),C['token']): abort(401)
 def sh(c,t=10):
     try: return subprocess.run(c,capture_output=True,text=True,timeout=t).stdout
